@@ -3,6 +3,8 @@ import Joi from "joi";
 
 import { addUpdateSetting, handleSaveError } from "./hooks.js";
 
+const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 const userSchema = new Schema({
     password: {
         type: String,
@@ -11,6 +13,7 @@ const userSchema = new Schema({
     },
     email: {
         type: String,
+        match: mailformat,
         required: [true, 'Email is required'],
         unique: true,
     },
@@ -28,14 +31,14 @@ userSchema.post("findOneAndUpdate", handleSaveError);
 
 export const userSignupSchema = Joi.object({
     password: Joi.string().min(4).required(),
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-    subscription: Joi.string().required(),
-    token: Joi.string().required(),
+    email: Joi.string().pattern(mailformat).required(),
+    subscription: Joi.string(),
+    token: Joi.string(),
 });
 
 export const userSigninSchema = Joi.object({
     password: Joi.string().min(4).required(),
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
+    email: Joi.string().pattern(mailformat).required(),
 });
 
 const User = model("user", userSchema);
