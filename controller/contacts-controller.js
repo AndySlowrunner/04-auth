@@ -3,13 +3,15 @@ import HttpError from '../helper/HttpError.js';
 import Contact from '../models/Contact.js';
 
 const getAll = async (req, res) => {
-    const result = await Contact.find({});
+    const { _id: owner } = req.user;
+    const result = await Contact.find({owner});
     res.json(result);
 };
 
 const getById = async (req, res) => {
-    const { contactId } = req.params;
-    const result = await Contact.findById(contactId);
+    const { contactId: _id } = req.params;
+    const { _id: owner } = req.user;
+    const result = await Contact.findOne({_id, owner});
     if (!result) {
         throw HttpError(404)
     };
@@ -17,13 +19,15 @@ const getById = async (req, res) => {
 };
 
 const addNew = async (req, res) => {
-    const result = await Contact.create(req.body);
+    const { _id: owner } = req.user;
+    const result = await Contact.create({...req.body, owner});
     res.status(201).json(result);
 };
 
 const deleteById = async (req, res) => {
-    const { contactId } = req.params;
-    const result = await Contact.findByIdAndDelete(contactId);
+    const { contactId: _id } = req.params;
+    const { _id: owner } = req.user;
+    const result = await Contact.findOneAndDelete({_id, owner});
     if (!result) {
         throw HttpError(404)
     };
@@ -31,8 +35,9 @@ const deleteById = async (req, res) => {
 };
 
 const updateById = async (req, res) => {
-    const { contactId } = req.params;
-    const result = await Contact.findByIdAndUpdate(contactId, req.body);
+    const { contactId: _id } = req.params;
+    const { _id: owner } = req.user;
+    const result = await Contact.findOneAndUpdate({_id, owner}, req.body);
     if (!result) {
         throw HttpError(404)
     };
@@ -40,8 +45,9 @@ const updateById = async (req, res) => {
 };
 
 const updateStatusContact = async (req, res) => {
-    const { contactId } = req.params;
-    const result = await Contact.findByIdAndUpdate(contactId, req.body);
+    const { contactId: _id } = req.params;
+    const { _id: owner } = req.user;
+    const result = await Contact.findOneAndUpdate({_id, owner}, req.body);
     if (!result) {
         throw HttpError(404)
     };

@@ -6,9 +6,12 @@ import isValidId from '../../middleware/isValidId.js';
 import validateBody from '../../decorators/validateBody.js';
 import { contactAddSchema, contactUpdateSchema, favoriteUpdateSchema } from '../../models/Contact.js';
 import isEmptyFavorite from '../../middleware/isEmptyFavorite.js';
+import authenticate from '../../middleware/authenticate.js';
 
 
 const router = express.Router()
+
+router.use(authenticate);
 
 router.get('/', contactsController.getAll);
 
