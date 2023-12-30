@@ -36,7 +36,7 @@ export const userSignupSchema = Joi.object({
     token: Joi.string(),
 });
 
-export const userSigninSchema = Joi.object({
+export const userLoginSchema = Joi.object({
     password: Joi.string().min(4).required(),
     email: Joi.string().pattern(mailformat).required(),
 });
